@@ -1,0 +1,28 @@
+name: Cache CI
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  cache-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/demo
+          key: cache-e6d2e50
+
+      - name: prime-cache-e6d2e50
+        run: echo "Cache hit? ${{ steps.cache.outputs.cache-hit }}"
+
+      - name: Populate cache if miss
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/.cache/demo
+          echo "cached data" > ~/.cache/demo/file.txt
